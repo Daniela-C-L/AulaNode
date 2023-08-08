@@ -138,48 +138,47 @@ module.exports = class UserController {
 
     }
 
-    static async editUser(req, res){ //Função de editar um usuario
+    static async editUser(req, res) {
         const id = req.params.id
 
-        //Checar se o usuario existe
+        //checar se o usuario exite
         const token = getToken(req)
         const user = await getUserById(token)
 
-        //Receber os dados nas variaveis
+        //receber os dados nas variaves
         const { name, email, phone, password, confirmpassword } = req.body
 
-        //Recebendo imagem do usuario
+        //recebendo imagem do usuario
         let image = ''
-        if (req.file){
+        if (req.file) {
             image = req.file.filename
         }
 
-        //[Validações de Campos Vazios]
-        if(!name){
-            res.status(422).json({ message: 'O campo Nome deve ser preenchido'})
+        //validações de campos vazios 
+        if (!name) {
+            res.status(422).json({ message: 'O nome é obrigatório' })
             return
         }
-
-        if(!email){
-            res.status(422).json({ message: 'O campo Nome deve ser preenchido'})
+        if (!email) {
+            res.status(422).json({ message: 'O email é obrigatório' })
             return
         }
-        const userExists = await User.findOne({ where: { email: email }})
-        if(user.email !== email && userExists){
-            res.status(422).json({ message: 'Email já cadastrado'})
+        const userExists = await User.findOne({ where: { email: email } })
+        if (user.email !== email && userExists) {
+            res.status(422).json({ message: 'Por favor utilize outro email' })
             return
         }
-        if(!phone){
-            res.status(422).json({ message: 'O campo Telefone é obrigatório'})
+        if (!phone) {
+            res.status(422).json({ message: 'O phone é obrigatório' })
             return
         }
         user.phone = phone
 
-        if (password !== confirmpassword){
-            res.status(422).json({ message: 'As senhas não são correspondentes'})
+        if (password !== confirmpassword) {
+            res.status(422).json({ message: 'as senhas não batem' })
             return
-        } else if(password === confirmpassword && password !== null){
-            //Criptografando senha
+        } else if (password === confirmpassword && password != null) {
+            //criptografando senha
             const salt = await bcrypt.genSalt(12)
             const passwordHash = await bcrypt.hash(password, salt)
 
@@ -188,17 +187,18 @@ module.exports = class UserController {
 
         const userToUpdate = await User.findByPk(id)
 
-        if(!userToUpdate) {
-            res.status(422).json({ message: 'Usuario não encontrado'})
+        if (!userToUpdate) {
+            res.status(422).json({ message: 'Usuario não encontrado' })
             return
         }
+
         userToUpdate.name = name
         userToUpdate.email = email
         userToUpdate.phone = phone
         userToUpdate.image = image
 
-        if(password === confirmpassword && password !== null){
-            //Criptografando senha
+        if (password === confirmpassword && password != null) {
+            //criptografando senha
             const salt = await bcrypt.genSalt(12)
             const passwordHash = await bcrypt.hash(password, salt)
 
@@ -207,12 +207,11 @@ module.exports = class UserController {
 
         try {
             await userToUpdate.save()
-            res.status(200).json({ message: 'Usuario atualizado com Sucesso'})
-            return
+            res.status(200).json({ message: 'usuario atualizado com sucesso' })
         } catch (error) {
-            res.status(200).json({ message: error.message})
+            res.status(500).json({ message: error.message })
         }
-    }
 
+    }
 }
 

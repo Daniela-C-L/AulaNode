@@ -7,6 +7,7 @@ import NavBar from "./components/NavBar";
 import { UserProvider } from "./Context/UserContext";
 import Container from "./components/Container";
 import AddPet from './pages/pets/AddPet'
+import PetDetails from './pages/pets/PetDetails'
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/user/profile" element={<Profile />} />
             <Route exact path="/pet/create" element={<AddPet />} />
+            <Route exact path="/pet/:id" element={<PetDetails />} />
+            <Route exact path="/pet/myadoptions" element={<MyAdoptions />} />
+            
           </Routes>
           </Container>
         </UserProvider>
